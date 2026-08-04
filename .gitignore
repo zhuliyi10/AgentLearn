@@ -24,3 +24,5 @@ Thumbs.db
 
 # ChromaDB data
 chroma/
+.chroma_data/
+**/.chroma_data/
