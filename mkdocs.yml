@@ -7,6 +7,7 @@ repo_name: zhuliyi10/AgentLearn
 theme:
   name: material
   language: zh
+  custom_dir: docs/overrides
   palette:
     - scheme: default
       primary: indigo
@@ -57,6 +58,7 @@ nav:
     - Plan-and-Execute 模式: 03_agent_patterns/02_plan_and_execute.md
     - Reflection 反思模式: 03_agent_patterns/03_reflection.md
     - 记忆机制: 03_agent_patterns/04_memory.md
+  - 部署指南: deployment-guide.md
 
 extra_css:
   - styles/custom.css

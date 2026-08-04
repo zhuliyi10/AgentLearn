@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="50dfa253-bf68-4cee-8aee-fc344fe4f9da"></script>
+  <style>
+    #giscus-container {
+      padding: 1em 0;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  {{ super() }}
+  {% include "partials/comments.html" %}
+{% endblock %}
