@@ -1,0 +1,62 @@
+site_name: Agent 学习项目
+site_description: 渐进式 AI Agent 开发学习路径
+site_url: ""
+repo_url: https://github.com/zhuliyi10/AgentLearn
+repo_name: zhuliyi10/AgentLearn
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - 首页: index.md
+  - 阶段1 - LLM 基础:
+    - Chat Completion 基础调用: 01_basics/01_chat_completion.md
+    - 提示词工程技巧: 01_basics/02_prompt_engineering.md
+    - 结构化输出: 01_basics/03_structured_output.md
+  - 阶段2 - 工具调用:
+    - Function Calling 机制: 02_tool_calling/01_function_calling.md
+    - 自定义工具实现: 02_tool_calling/02_custom_tools.md
+    - 工具调用循环: 02_tool_calling/03_tool_loop.md
+  - 阶段3 - Agent 设计模式:
+    - ReAct 模式: 03_agent_patterns/01_react.md
+    - Plan-and-Execute 模式: 03_agent_patterns/02_plan_and_execute.md
+    - Reflection 反思模式: 03_agent_patterns/03_reflection.md
+    - 记忆机制: 03_agent_patterns/04_memory.md
+
+extra_css:
+  - styles/custom.css

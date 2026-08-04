@@ -22,6 +22,9 @@ build/
 .DS_Store
 Thumbs.db
 
+# MkDocs build
+site/
+
 # ChromaDB data
 chroma/
 .chroma_data/

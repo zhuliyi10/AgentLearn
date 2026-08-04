@@ -258,4 +258,4 @@ messages = [
 
 ## 下一步
 
-→ [02_custom_tools.py](./02_custom_tools.py) - 构建更丰富的自定义工具
+→ [02 - 自定义工具实现](02_custom_tools.md)

@@ -184,4 +184,4 @@ A: 非 stream 等全部生成完毕后一次性返回；stream 边生成边返�
 
 ## 下一步
 
-→ [02_prompt_engineering.py](./02_prompt_engineering.py) - 学习提示词工程技巧
+→ [02 - 提示词工程技巧](02_prompt_engineering.md)

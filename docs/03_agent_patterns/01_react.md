@@ -241,4 +241,4 @@ ReAct 是 Agent 模式的基础范式。后续的 Plan-and-Execute、Reflection 
 
 ## 下一步
 
-→ [02_plan_and_execute.py](./02_plan_and_execute.py) - Plan-and-Execute 模式
+→ [02 - Plan-and-Execute 模式](02_plan_and_execute.md)

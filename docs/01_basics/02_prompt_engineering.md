@@ -216,4 +216,4 @@ A: 程序需要解析模型的输出来决定下一步动作。没有固定格�
 
 ## 下一步
 
-→ [03_structured_output.py](./03_structured_output.py) - 学习结构化输出
+→ [03 - 结构化输出](03_structured_output.md)
