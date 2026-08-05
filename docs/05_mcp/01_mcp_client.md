@@ -33,12 +33,14 @@ MCP (Model Context Protocol，模型上下文协议) 是一个**开放标准**�
 
 MCP 采用「客户端 / 服务端」架构，二者通过 **JSON-RPC 2.0** 消息通信：
 
+```mermaid
+flowchart LR
+    C["Client<br/>（你的 Agent）"] -->|"请求（调用工具）"| S["Server<br/>（能力提供方）"]
+    S -->|"响应（工具结果）"| C
+    linkStyle default stroke-width:1.5px
 ```
-┌────────────┐   JSON-RPC over stdio   ┌────────────┐
-│  Client    │ ──────请求 (调用工具)──→ │  Server    │
-│ (你的Agent)│ ←─────响应 (工具结果)──── │ (能力提供方)│
-└────────────┘                          └────────────┘
-```
+
+> 通信协议：JSON-RPC over stdio
 
 ### 3. 传输方式 (Transport)
 

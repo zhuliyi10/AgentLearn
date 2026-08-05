@@ -201,15 +201,11 @@ def read_file(file_path: str, max_lines: int = 50) -> str:
 
 ## 架构对比
 
-```
-01_function_calling.py (手动映射)          02_custom_tools.py (注册表模式)
-┌────────────────────────┐               ┌────────────────────────┐
-│ TOOLS = [schema...]    │  分离          │ @registry.register()   │  绑定
-│ TOOL_FUNCTIONS = {...} │  ←──→         │   schema + func 一体   │
-└────────────────────────┘               └────────────────────────┘
-  添加新工具: 改两处                        添加新工具: 加一个装饰器
-  适合: 2-3 个工具的简单场景                适合: 工具多、需动态管理
-```
+| 对比维度 | 手动映射（01_function_calling.py） | 注册表模式（02_custom_tools.py） |
+| :--- | :--- | :--- |
+| 结构 | `TOOLS = [schema...]` 与 `TOOL_FUNCTIONS = {...}` **分离** | `@registry.register()`，schema + func **一体绑定** |
+| 添加新工具 | 改两处 | 加一个装饰器 |
+| 适合场景 | 2-3 个工具的简单场景 | 工具多、需动态管理 |
 
 ---
 

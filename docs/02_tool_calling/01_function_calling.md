@@ -39,22 +39,16 @@ Function Calling 让 LLM 能够**请求调用外部工具**。模型本身不执
 
 ### 3. 完整交互流程
 
-```
-┌──────────┐         ┌──────────┐         ┌──────────┐
-│   User   │         │   LLM    │         │  我们的代码 │
-└────┬─────┘         └────┬─────┘         └────┬─────┘
-     │  "北京天气怎么样？"  │                     │
-     │────────────────────►│                     │
-     │                     │  tool_calls:         │
-     │                     │  get_weather(北京)   │
-     │                     │────────────────────►│
-     │                     │                     │ 执行函数
-     │                     │  tool result:       │ 获取数据
-     │                     │  {"temp": 28, ...}  │
-     │                     │◄────────────────────│
-     │                     │                     │
-     │  "北京今天晴，28℃"  │                     │
-     │◄────────────────────│                     │
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant L as LLM
+    participant C as 我们的代码
+    U->>L: "北京天气怎么样？"
+    L->>C: tool_calls: get_weather(北京)
+    Note over C: 执行函数，获取数据
+    C-->>L: tool result: {"temp": 28, ...}
+    L-->>U: "北京今天晴，28℃"
 ```
 
 ---

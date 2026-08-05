@@ -40,27 +40,20 @@ ReAct:        用户提问 → Thought → Action → Observation → Thought �
 | **Action** | LLM | 选择一个工具并给出参数 |
 | **Observation** | 代码执行 | 工具返回的结果，反馈给 LLM 继续推理 |
 
-```
-┌──────────┐                    ┌──────────┐                    ┌──────────┐
-│   User   │                    │   LLM    │                    │  工具执行  │
-└────┬─────┘                    └────┬─────┘                    └────┬─────┘
-     │  "现在几点？距结束还有多久？"   │                              │
-     │──────────────────────────────►│                              │
-     │                               │  Thought: 需要先获取当前时间   │
-     │                               │  Action: get_time()          │
-     │                               │─────────────────────────────►│
-     │                               │  Observation: 2025-08-03 14:30│
-     │                               │◄─────────────────────────────│
-     │                               │                              │
-     │                               │  Thought: 需要计算剩余时间     │
-     │                               │  Action: calculate(24-14.5)  │
-     │                               │─────────────────────────────►│
-     │                               │  Observation: 9.5            │
-     │                               │◄─────────────────────────────│
-     │                               │                              │
-     │                               │  Thought: 信息够了             │
-     │  Final Answer: 还有约9.5小时   │                              │
-     │◄──────────────────────────────│                              │
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant L as LLM
+    participant T as 工具执行
+    U->>L: "现在几点？距结束还有多久？"
+    Note over L: Thought: 需要先获取当前时间
+    L->>T: Action: get_time()
+    T-->>L: Observation: 2025-08-03 14:30
+    Note over L: Thought: 需要计算剩余时间
+    L->>T: Action: calculate(24-14.5)
+    T-->>L: Observation: 9.5
+    Note over L: Thought: 信息够了
+    L-->>U: Final Answer: 还有约9.5小时
 ```
 
 ### 3. ReAct vs 传统工具循环
