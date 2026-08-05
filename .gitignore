@@ -29,3 +29,7 @@ site/
 chroma/
 .chroma_data/
 **/.chroma_data/
+
+# MCP 工具集运行时产物 (沙箱文件与本地数据库)
+05_mcp/03_mcp_tools/sandbox/
+05_mcp/03_mcp_tools/notes.db

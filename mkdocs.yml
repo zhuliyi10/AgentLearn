@@ -63,6 +63,10 @@ nav:
     - 条件路由: 04_langgraph/02_conditional_edges.md
     - 人工介入: 04_langgraph/03_human_in_loop.md
     - 子图模块化: 04_langgraph/04_subgraph.md
+  - 阶段5 - MCP 协议:
+    - MCP Client: 05_mcp/01_mcp_client.md
+    - MCP Server: 05_mcp/02_mcp_server.md
+    - 实用工具集: 05_mcp/03_mcp_tools.md
   - 部署指南: deployment-guide.md
 
 extra_css:
