@@ -58,6 +58,11 @@ nav:
     - Plan-and-Execute 模式: 03_agent_patterns/02_plan_and_execute.md
     - Reflection 反思模式: 03_agent_patterns/03_reflection.md
     - 记忆机制: 03_agent_patterns/04_memory.md
+  - 阶段4 - LangGraph 框架:
+    - 图基础: 04_langgraph/01_graph_basics.md
+    - 条件路由: 04_langgraph/02_conditional_edges.md
+    - 人工介入: 04_langgraph/03_human_in_loop.md
+    - 子图模块化: 04_langgraph/04_subgraph.md
   - 部署指南: deployment-guide.md
 
 extra_css:
