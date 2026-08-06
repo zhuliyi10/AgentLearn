@@ -21,15 +21,10 @@ python 01_basics/01_chat_completion.py
 
 Chat Completion API 是大语言模型最基础的调用方式。你发送一组 **消息 (messages)**，模型返回一个 **回复 (completion)**。
 
-```
-请求 (Request)                    响应 (Response)
-┌─────────────────────┐          ┌─────────────────────┐
-│ model               │          │ choices[0].message  │
-│ messages: [...]     │  ──────► │   .content          │
-│ temperature         │          │ usage               │
-│ max_tokens          │          │   .prompt_tokens    │
-│ stream              │          │   .completion_tokens│
-└─────────────────────┘          └─────────────────────┘
+```mermaid
+flowchart LR
+    Req["请求 Request<br/>model<br/>messages: [...]<br/>temperature<br/>max_tokens<br/>stream"] -->|HTTP| M["LLM 模型"]
+    M -->|生成| Resp["响应 Response<br/>choices[0].message.content<br/>usage.prompt_tokens<br/>usage.completion_tokens"]
 ```
 
 ### 2. 三种消息角色
@@ -102,6 +97,22 @@ for user_input in conversations:
 - 每次调用都发送 **完整历史**，模型才能理解上下文
 - 必须把 assistant 回复也加回 messages，否则下一轮模型"失忆"
 - 对话越长，token 消耗越大（注意成本控制）
+
+多轮对话中，`messages` 列表像滚雪球一样不断累积，每一轮都把完整历史重新发给无状态的模型：
+
+```mermaid
+sequenceDiagram
+    participant App as 我们的代码
+    participant M as LLM
+    Note over App: messages = [system]
+    App->>App: append(user: "问题1")
+    App->>M: messages = [system, user1]
+    M-->>App: "回复1"
+    App->>App: append(assistant: "回复1")
+    App->>App: append(user: "问题2")
+    App->>M: messages = [system, user1, 回复1, user2]
+    M-->>App: "回复2 （已理解上下文）"
+```
 
 ### 示例 3：流式输出
 

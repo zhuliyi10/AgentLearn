@@ -47,6 +47,17 @@ LLM 本身是**无状态**的——每次调用都是一张白纸。它不记得
 | **长期记忆** | 图书馆 | 向量数据库 (ChromaDB) | 永久（跨会话） | `LongTermMemory` 类 |
 | **工作记忆** | 草稿纸 | 临时变量 | 当前任务 | ReAct 中的 `messages` 累积 |
 
+```mermaid
+flowchart LR
+    U["用户输入"] --> ST["短期记忆<br/>当前 messages 列表"]
+    U --> WM["工作记忆<br/>任务中间结果"]
+    ST -->|"超出窗口时压缩"| LT["长期记忆<br/>ChromaDB 向量数据库"]
+    LT -->|"语义检索注入上下文"| LM["LLM"]
+    ST --> LM
+    WM --> LM
+    LM --> A["回答"]
+```
+
 ---
 
 ## 代码实现详解
@@ -103,10 +114,9 @@ def summary(self) -> str:
 
 这是一种更高级的裁剪方式——不是简单丢弃旧消息，而是用 LLM 把它们**压缩成摘要**，然后注入 system prompt。这样既节省了 token，又保留了关键信息。
 
-```
-原始: 10条消息 (2000 tokens)
-  ↓ LLM 摘要
-压缩: 1条摘要 (100 tokens)  ← "用户叫小明，Python开发者，正在学Agent"
+```mermaid
+flowchart LR
+    OM["原始 10 条消息<br/>≈ 2000 tokens"] -->|"LLM 摘要"| CM["1 条摘要<br/>≈ 100 tokens<br/>「用户叫小明，Python 开发者，正在学 Agent」"]
 ```
 
 ### 2. LongTermMemory：长期记忆（向量数据库）
@@ -115,17 +125,19 @@ def summary(self) -> str:
 
 #### 向量检索原理
 
-```
-存储过程:
-  "Python GIL 使多线程无法真正并行" → Embedding → [0.12, -0.34, 0.78, ...] → 存入数据库
-  "LangGraph 是图结构 Agent 框架" → Embedding → [0.56, 0.23, -0.11, ...] → 存入数据库
-  "ReAct 核心是 TAO 循环"          → Embedding → [-0.08, 0.45, 0.62, ...] → 存入数据库
-
-检索过程:
-  查询: "Python 多线程有什么问题？"
-    → Embedding → [0.10, -0.30, 0.75, ...]
-    → 计算与每条记忆的余弦相似度
-    → 返回最相似的: "Python GIL 使多线程无法真正并行" ✓
+```mermaid
+flowchart TB
+    subgraph Store["存储过程"]
+        T1["文本: Python GIL..."] -->|"Embedding"| V1["向量 [0.12, -0.34...]"]
+        T2["文本: LangGraph..."] -->|"Embedding"| V2["向量 [0.56, 0.23...]"]
+        T3["文本: ReAct TAO..."] -->|"Embedding"| V3["向量 [-0.08, 0.45...]"]
+        V1 & V2 & V3 --> DB["ChromaDB 向量数据库"]
+    end
+    subgraph Recall["检索过程"]
+        Q["查询: Python 多线程问题？"] -->|"Embedding"| QV["向量 [0.10, -0.30...]"]
+        QV -->|"余弦相似度计算"| R["返回最相似的: Python GIL ✓"]
+    end
+    DB --> Recall
 ```
 
 **关键概念：** Embedding 将文本转换为高维向量，语义相近的文本在向量空间中距离也近。这就是为什么"Python 多线程问题"能匹配到"GIL 无法真正并行"——虽然字面不同，但语义相关。
@@ -266,24 +278,22 @@ def chat(self, user_input: str) -> str:
 
 **完整数据流：**
 
-```
-用户输入: "你还记得我叫什么吗？"
-    │
-    ├──→ 长期记忆检索: recall("你还记得我叫什么吗？")
-    │    → 找到: "用户说: 我叫小明，是一名 Python 开发者"
-    │
-    ├──→ 构建 messages:
-    │    [system] "你是一个友好的助手..."
-    │    [system] "以下是你记得的相关信息:\n- 用户说: 我叫小明..."  ← 长期记忆注入
-    │    [user]   "我叫小明，是一名 Python 开发者"                  ← 短期记忆
-    │    [assistant] "你好小明！..."                                ← 短期记忆
-    │    [user]   "你还记得我叫什么吗？"                            ← 当前输入
-    │
-    ├──→ LLM 生成: "你叫小明，你是一名 Python 开发者！"
-    │
-    └──→ 更新记忆:
-         短期: 追加 user + assistant 消息
-         长期: 存储本轮对话摘要
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant A as MemoryAgent
+    participant LT as 长期记忆
+    participant ST as 短期记忆
+    participant L as LLM
+    U->>A: "你还记得我叫什么吗？"
+    A->>LT: recall(查询)
+    LT-->>A: "用户说: 我叫小明，Python 开发者"
+    Note over A: 组装 messages:<br/>短期记忆 + 长期记忆注入
+    A->>L: messages (system + 长期注入 + 短期历史 + 当前输入)
+    L-->>A: "你叫小明，你是一名 Python 开发者！"
+    A->>ST: 追加 user + assistant 消息
+    A->>LT: 存储本轮对话摘要
+    A-->>U: "你叫小明，你是一名 Python 开发者！"
 ```
 
 ---
@@ -328,20 +338,12 @@ A: 让 ChromaDB 将数据持久化到磁盘。下次运行程序时，之前存�
 
 ## 知识脉络
 
-```
-01_react: ReAct 模式 (推理+行动)
-  ↓
-02_plan_and_execute: Plan-and-Execute (规划+执行)
-  ↓
-03_reflection: Reflection (生成+反思)
-  ↓
-04_memory 本课: Memory (记忆系统)
-  ├── 短期记忆: 滑动窗口裁剪 + 摘要压缩
-  ├── 长期记忆: ChromaDB 向量数据库 + 语义检索
-  └── 组合使用: MemoryAgent 整合两种记忆
-  ↓
-阶段3 完成！
-下一阶段: 使用 LangGraph 框架构建 Agent
+```mermaid
+flowchart TB
+    S1["ReAct<br/>推理 + 行动"] --> S2["Plan-and-Execute<br/>规划 + 执行"]
+    S2 --> S3["Reflection<br/>生成 + 反思"]
+    S3 --> S4["本课: Memory 记忆系统<br/>短期记忆（滑动窗口 + 摘要压缩）<br/>长期记忆（ChromaDB + 语义检索）"]
+    S4 --> S5["下一阶段: LangGraph 框架<br/>构建 Agent"]
 ```
 
 ---

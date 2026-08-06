@@ -21,9 +21,17 @@ python 04_langgraph/02_conditional_edges.py
 
 条件路由是 LangGraph 的核心能力之一。它允许你**根据状态动态决定下一步执行哪个节点**：
 
-```
-硬编码路由:  A → B → C (固定流程)
-条件路由:    A → (根据状态) → B 或 C 或 D (动态决策)
+```mermaid
+flowchart LR
+    subgraph HC["硬编码路由（固定流程）"]
+        A1["A"] --> B1["B"] --> C1["C"]
+    end
+    subgraph CR["条件路由（动态决策）"]
+        A2["A"] --> D{"根据状态"}
+        D -->|"条件1"| B2["B"]
+        D -->|"条件2"| C2["C"]
+        D -->|"条件3"| D2["D"]
+    end
 ```
 
 **关键认知：** 条件路由让 Agent 具备了**智能决策**能力。不再是死板的流程，而是根据实际情况灵活选择路径。
@@ -95,16 +103,15 @@ def route_decision(state: RouterState) -> dict:
 
 本课实现了一个完整的意图路由系统：
 
-```
-START → intent_classifier → route_decision → (条件路由)
-                                                    ↓
-                                            ┌───────┴───────┬──────────┐
-                                            ↓               ↓          ↓
-                                          qa_handler    task_executor  ...
-                                            ↓               ↓          ↓
-                                            └───────┬───────┴──────────┘
-                                                    ↓
-                                                   END
+```mermaid
+flowchart TB
+    S["START"] --> IC["intent_classifier<br/>识别用户意图"]
+    IC --> RD["route_decision<br/>意图 + 置信度路由"]
+    RD -->|"question"| QA["qa_handler"]
+    RD -->|"task"| TE["task_executor"]
+    RD -->|"chitchat"| CH["chitchat_handler"]
+    RD -->|"低置信度"| FB["fallback_handler"]
+    QA & TE & CH & FB --> E["END"]
 ```
 
 **节点说明：**
@@ -180,16 +187,16 @@ def advanced_router(state: AdvancedState) -> dict:
 
 **流程：**
 
-```
-START → user_classifier → complexity_analyzer → advanced_router → (条件路由)
-                                                                      ↓
-                                                        ┌─────────────┼─────────────┐
-                                                        ↓             ↓             ↓
-                                                  onboarding    premium_complex   ...
-                                                        ↓             ↓             ↓
-                                                        └─────────────┴─────────────┘
-                                                                      ↓
-                                                                     END
+```mermaid
+flowchart TB
+    S["START"] --> UC["user_classifier<br/>识别用户类型"] --> CA["complexity_analyzer<br/>分析请求复杂度"]
+    CA --> AR["advanced_router<br/>综合决策"]
+    AR -->|"新用户"| OB["onboarding"]
+    AR -->|"高级 + 复杂"| PC["premium_complex"]
+    AR -->|"高级 + 简单"| PS["premium_simple"]
+    AR -->|"普通 + 复杂"| CC["complex"]
+    AR -->|"普通 + 简单"| SC["simple"]
+    OB & PC & PS & CC & SC --> E["END"]
 ```
 
 ---
@@ -308,17 +315,10 @@ A: 可以，这就是多级路由。例如：
 
 ## 知识脉络
 
-```
-上一课: 图基础 (State、Node、Edge)
-  ↓
-本课: 条件路由 (动态决策)
-  ↓
-关键能力:
-  • 路由函数: 根据状态返回节点名
-  • 路由映射: {返回值: 节点名}
-  • 多级路由: 串联多个路由节点
-  ↓
-下一课: 人工介入 (interrupt 机制)
+```mermaid
+flowchart TB
+    S1["上一课: 图基础<br/>State / Node / Edge"] --> S2["本课: 条件路由<br/>动态决策<br/>路由函数 · 路由映射 · 多级路由"]
+    S2 --> S3["下一课: 人工介入<br/>interrupt 机制"]
 ```
 
 条件路由是 LangGraph 的核心能力。掌握了它，你就能构建智能、灵活的 Agent 工作流。

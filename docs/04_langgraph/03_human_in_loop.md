@@ -21,9 +21,14 @@ python 04_langgraph/03_human_in_loop.py
 
 Human-in-the-Loop (HITL) 是一种**人工介入机制**，让 Agent 在关键决策点暂停，等待人工审批或指导：
 
-```
-全自动 Agent:  LLM 自主决策 → 执行工具 → 返回结果 (无人工参与)
-人工介入:     LLM 决策 → 暂停 → 人工审批 → 继续执行 (人在回路)
+```mermaid
+flowchart LR
+    subgraph Auto["全自动 Agent"]
+        A1["LLM 自主决策"] --> A2["执行工具"] --> A3["返回结果"]
+    end
+    subgraph HITL["人工介入（Human-in-the-Loop）"]
+        B1["LLM 决策"] --> B2["暂停等待"] --> B3["人工审批"] --> B4["继续执行"]
+    end
 ```
 
 **关键认知：** HITL 不是降低自动化程度，而是**增加安全性**。它让 Agent 在高风险操作前获得人工确认，避免错误和损失。
@@ -61,10 +66,13 @@ app = graph.compile(checkpointer=checkpointer)
 
 典型的审批流程：
 
-```
-START → agent_planner → human_approval → action_executor → END
-           ↓                ↓                 ↓
-       LLM 决策        人工审批          执行/拒绝
+```mermaid
+flowchart LR
+    S["START"] --> AP["agent_planner<br/>LLM 决策"]
+    AP --> HA["human_approval<br/>人工审批"]
+    HA -->|"approved"| AE["action_executor<br/>执行动作"]
+    HA -->|"rejected"| E2["END（拒绝）"]
+    AE --> E["END"]
 ```
 
 **状态流转：**
@@ -132,18 +140,14 @@ def conditional_approval_router(state: ApprovalState) -> str:
 
 **流程：**
 
-```
-START → agent_planner → risk_assessor → (条件路由)
-                                              ↓
-                                ┌─────────────┼─────────────┐
-                                ↓             ↓             ↓
-                          human_approval  quick_approval  auto_approve
-                                ↓             ↓             ↓
-                                └─────────────┴─────────────┘
-                                              ↓
-                                      action_executor
-                                              ↓
-                                             END
+```mermaid
+flowchart TB
+    S["START"] --> AP["agent_planner"] --> RA["risk_assessor<br/>风险评估"]
+    RA -->|"高风险"| HA["human_approval<br/>人工审批（安全优先）"]
+    RA -->|"中风险"| QA["quick_approval<br/>快速审批（平衡）"]
+    RA -->|"低风险"| AA["auto_approve<br/>自动批准（效率优先）"]
+    HA & QA & AA --> AE["action_executor"]
+    AE --> E["END"]
 ```
 
 **优势：**
@@ -276,17 +280,10 @@ A: 会，但可以通过**条件审批**平衡安全和效率：
 
 ## 知识脉络
 
-```
-上一课: 条件路由 (动态决策)
-  ↓
-本课: 人工介入 (interrupt 机制)
-  ↓
-关键能力:
-  • MemorySaver: 保存状态，支持中断恢复
-  • interrupt: 在节点暂停等待人工输入
-  • 条件审批: 根据风险等级动态决策
-  ↓
-下一课: 子图模块化 (图嵌套)
+```mermaid
+flowchart TB
+    S1["上一课: 条件路由<br/>动态决策"] --> S2["本课: 人工介入<br/>interrupt 机制<br/>MemorySaver · 条件审批 · 风险分级"]
+    S2 --> S3["下一课: 子图模块化<br/>图嵌套"]
 ```
 
 Human-in-the-Loop 是生产级 Agent 的必备能力。掌握了它，你就能构建安全、可控、合规的 Agent 系统。

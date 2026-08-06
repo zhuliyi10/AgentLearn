@@ -196,16 +196,12 @@ A: 完全可以。`agent.py` 的桥接逻辑对任何 MCP Server 都通用 —�
 
 ## 知识脉络
 
-```
-阶段1: LLM 决策
-  +
-阶段2: Function Calling
-  +
-阶段5: MCP (工具发现与标准化)
-  ↓
-本课: LLM 从 MCP 动态获得能力并自主编排  ← 现代 Agent 的完整闭环
-  ↓
-阶段6: 多 Agent 协作
+```mermaid
+flowchart TB
+    S1["阶段1: LLM 决策"] --> C["本课: LLM 从 MCP 动态获得能力并自主编排<br/>现代 Agent 的完整闭环"]
+    S2["阶段2: Function Calling"] --> C
+    S3["阶段5: MCP 工具发现与标准化"] --> C
+    C --> S4["阶段6: 多 Agent 协作"]
 ```
 
 至此，阶段 5 全部完成。你已经能解释 MCP 的设计理念、开发自己的 Server、并让 Agent 通过 MCP 连接外部能力。
@@ -214,4 +210,4 @@ A: 完全可以。`agent.py` 的桥接逻辑对任何 MCP Server 都通用 —�
 
 ## 下一步
 
-→ 阶段 6 - 多 Agent 协作
+→ [阶段 6 - 多 Agent 协作](../06_multi_agent/01_supervisor.md)

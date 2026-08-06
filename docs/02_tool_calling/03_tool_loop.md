@@ -39,6 +39,15 @@ while True:
         break
 ```
 
+```mermaid
+flowchart TB
+    S["用户任务"] --> L["LLM 决策<br/>messages + tools"]
+    L --> D{"有 tool_calls？"}
+    D -->|"是"| T["执行所有工具<br/>结果加入 messages"]
+    T --> L
+    D -->|"否"| A["输出最终回答"]
+```
+
 就这么简单。**所有 Agent 框架的底层都是这个循环**，区别只在于：
 - 工具更丰富（代码执行、数据库、API...）
 - 循环更复杂（分支、并行、人工审批...）
@@ -46,12 +55,10 @@ while True:
 
 ### 3. 与前两课的关系
 
-```
-01 Function Calling    →  单次请求-响应（一问一答）
-02 Custom Tools        →  工具管理（注册表模式）
-03 Tool Loop           →  多轮自主决策（Agent 诞生）
-                              ↑
-                     从"我们控制流程"变成"LLM 控制流程"
+```mermaid
+flowchart TB
+    F1["01 Function Calling<br/>单次请求-响应（一问一答）"] --> F2["02 Custom Tools<br/>工具管理（注册表模式）"]
+    F2 --> F3["03 Tool Loop<br/>多轮自主决策<br/>LLM 控制流程"]
 ```
 
 ---
@@ -192,10 +199,10 @@ A: 本质相同。ReAct（Reasoning + Acting）= Thought（LLM 思考）+ Action
 
 ## 阶段 2 总结
 
-```
-01 Function Calling  →  协议层：LLM 如何表达"我想调工具"
-02 Custom Tools      →  工程层：如何管理和实现工具
-03 Tool Loop         →  架构层：如何驱动自主决策循环
+```mermaid
+flowchart TB
+    L1["01 Function Calling<br/>协议层：LLM 如何表达「我想调工具」"] --> L2["02 Custom Tools<br/>工程层：如何管理和实现工具"]
+    L2 --> L3["03 Tool Loop<br/>架构层：如何驱动自主决策循环"]
 ```
 
 **核心认知：Agent = LLM(大脑) + Tools(手脚) + Loop(决策循环)**

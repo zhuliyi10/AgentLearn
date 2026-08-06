@@ -21,9 +21,15 @@ python 03_agent_patterns/02_plan_and_execute.py
 
 Plan-and-Execute 的核心思想很直觉：**先想清楚要做什么，再动手**。
 
-```
-ReAct:            Thought → Action → Observation → Thought → Action → Observation → ...  (逐步推进)
-Plan-and-Execute: [制定完整计划] → 步骤1 → 步骤2 → ... → 步骤N → [汇总报告]              (全局规划)
+```mermaid
+flowchart TB
+    subgraph RA["ReAct（逐步推进）"]
+        R1["Thought"] --> R2["Action"] --> R3["Observation"] --> R1
+        R3 -. "完成" .-> R4["Final Answer"]
+    end
+    subgraph PE["Plan-and-Execute（全局规划）"]
+        P1["制定完整计划"] --> P2["步骤1"] --> P3["步骤2"] --> P4["... 步骤N"] --> P5["汇总报告"]
+    end
 ```
 
 ReAct 像一个**边想边做**的人，每走一步都要停下来思考下一步。Plan-and-Execute 则像一个**项目经理**——先列出完整的工作计划，然后按部就班地执行，遇到问题才调整计划。
@@ -287,17 +293,11 @@ A: 每次 Replan 需要额外一次 LLM 调用，且会丢弃原计划中未执�
 
 ## 知识脉络
 
-```
-阶段2: 工具循环 (LLM 直接调工具)
-  ↓
-01_react: ReAct 模式 (逐步思考，白盒推理)
-  ↓
-02_plan_and_execute 本课: Plan-and-Execute (先全局规划，再逐步执行)
-  ├── 核心创新: Planner + Executor 分离
-  ├── 关键技术: 结构化输出 (Pydantic + JSON Schema)
-  └── 容错机制: Replan 动态调整
-  ↓
-下一课: 03_reflection.py - Reflection 自我反思模式
+```mermaid
+flowchart TB
+    S1["阶段2: 工具循环<br/>LLM 直接调工具"] --> S2["ReAct<br/>逐步思考，白盒推理"]
+    S2 --> S3["本课: Plan-and-Execute<br/>先全局规划，再逐步执行<br/>Planner + Executor 分离 · 结构化输出 · Replan 容错"]
+    S3 --> S4["下一课: Reflection<br/>自我反思模式"]
 ```
 
 ---

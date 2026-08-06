@@ -33,6 +33,16 @@ MCP Server 能对外暴露三类东西：
 
 理解这个划分很重要：**Tools 是「做事」，Resources 是「读数据」，Prompts 是「给提示词」**。三者共同构成 Server 对 Agent 的完整供给。
 
+```mermaid
+flowchart LR
+    S["MCP Server"] --> T["Tools<br/>可调用的动作<br/>@server.tool()"]
+    S --> R["Resources<br/>可读取的数据<br/>@server.resource()"]
+    S --> P["Prompts<br/>提示词模板<br/>@server.prompt()"]
+    T -->|"做事（有副作用）"| AG["Agent"]
+    R -->|"读数据（只读）"| AG
+    P -->|"提示词复用"| AG
+```
+
 ---
 
 ## 代码实现详解
@@ -178,14 +188,11 @@ A: 是同一套「装饰器风格」的高层 API 在不同 SDK 版本中的名�
 
 ## 知识脉络
 
-```
-阶段2: 工具写死在 Agent 里
-  ↓
-阶段5 上一课: MCP Client (学会消费别人的能力)
-  ↓
-阶段5 本课: MCP Server (学会生产、暴露自己的能力)
-  ↓
-下一课: 实用工具集 (文件/数据库/API + 让 LLM 自动调用)
+```mermaid
+flowchart TB
+    S2["阶段2: 工具写死在 Agent 里"] --> C1["阶段5 上一课: MCP Client<br/>学会消费别人的能力"]
+    C1 --> C2["阶段5 本课: MCP Server<br/>学会生产、暴露自己的能力"]
+    C2 --> N["下一课: 实用工具集<br/>文件/数据库/API + 让 LLM 自动调用"]
 ```
 
 ---

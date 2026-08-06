@@ -71,6 +71,11 @@ nav:
     - MCP Client: 05_mcp/01_mcp_client.md
     - MCP Server: 05_mcp/02_mcp_server.md
     - 实用工具集: 05_mcp/03_mcp_tools.md
+  - 阶段6 - 多 Agent 协作:
+    - Supervisor 主管模式: 06_multi_agent/01_supervisor.md
+    - 层级式架构: 06_multi_agent/02_hierarchical.md
+    - 协作式架构: 06_multi_agent/03_collaborative.md
+    - 辩论式架构: 06_multi_agent/04_debate.md
   - 部署指南: deployment-guide.md
 
 extra_css:

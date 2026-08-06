@@ -21,9 +21,16 @@ python 04_langgraph/04_subgraph.py
 
 子图是**嵌入在主图中的独立图结构**。它将复杂工作流拆分为多个可管理的模块：
 
-```
-单体图:     所有逻辑在一个大图里 (难维护)
-子图模块化: 将功能拆分为独立子图，主图协调 (易维护、可复用)
+```mermaid
+flowchart LR
+    subgraph Mono["单体图（难维护）"]
+        N1["功能A"] --> N2["功能B"] --> N3["功能C"] --> N4["功能D..."]
+    end
+    subgraph Modular["子图模块化（易维护、可复用）"]
+        M["主图<br/>高层协调"] --> SG1["子图 A"]
+        M --> SG2["子图 B"]
+        M --> SG3["子图 C"]
+    end
 ```
 
 **关键认知：** 子图是**关注点分离**的体现。主图负责高层协调，子图负责具体实现。就像函数调用一样，主图调用子图，子图完成任务后返回结果。
@@ -90,17 +97,13 @@ def research_coordinator(state: MainState) -> dict:
 
 本课实现了一个任务协调系统，主图负责路由到不同子图：
 
-```
-START → task_router → (条件路由)
-                          ↓
-                ┌─────────┼─────────┐
-                ↓         ↓         ↓
-          research    writing    analysis
-          coordinator coordinator coordinator
-                ↓         ↓         ↓
-                └─────────┴─────────┘
-                          ↓
-                         END
+```mermaid
+flowchart TB
+    S["START"] --> TR["task_router<br/>识别任务类型"]
+    TR -->|"research"| RC["research_coordinator<br/>调用研究子图"]
+    TR -->|"writing"| WC["writing_coordinator<br/>调用写作子图"]
+    TR -->|"analysis"| AC["analysis_coordinator<br/>调用分析子图"]
+    RC & WC & AC --> E["END"]
 ```
 
 **主图节点：**
@@ -114,8 +117,9 @@ START → task_router → (条件路由)
 
 ### 研究子图
 
-```
-START → research_planner → research_executor → research_summarizer → END
+```mermaid
+flowchart LR
+    S["START"] --> RP["research_planner<br/>制定研究策略"] --> RE["research_executor<br/>收集信息"] --> RS["research_summarizer<br/>生成摘要"] --> E["END"]
 ```
 
 **节点说明：**
@@ -138,8 +142,9 @@ class ResearchState(TypedDict):
 
 ### 写作子图
 
-```
-START → outline_generator → draft_writer → content_refiner → END
+```mermaid
+flowchart LR
+    S["START"] --> OG["outline_generator<br/>生成大纲"] --> DW["draft_writer<br/>撰写草稿"] --> CR["content_refiner<br/>内容润色"] --> E["END"]
 ```
 
 **节点说明：**
@@ -163,8 +168,9 @@ class WritingState(TypedDict):
 
 ### 分析子图
 
-```
-START → data_processor → analyzer → END
+```mermaid
+flowchart LR
+    S["START"] --> DP["data_processor<br/>数据处理"] --> AN["analyzer<br/>执行分析"] --> E["END"]
 ```
 
 **节点说明：**
@@ -352,17 +358,10 @@ A: 会有一定开销，但通常可以忽略。如果性能敏感，可以：
 
 ## 知识脉络
 
-```
-上一课: 人工介入 (interrupt 机制)
-  ↓
-本课: 子图模块化 (图嵌套)
-  ↓
-关键能力:
-  • 子图定义: 独立的 StateGraph
-  • 子图调用: 在主图节点中调用子图
-  • 状态桥接: 主图状态 ↔ 子图状态
-  ↓
-阶段 4 完成！
+```mermaid
+flowchart TB
+    S1["上一课: 人工介入<br/>interrupt 机制"] --> S2["本课: 子图模块化<br/>图嵌套<br/>子图定义 · 子图调用 · 状态桥接"]
+    S2 --> S3["阶段4 完成！<br/>下一阶段: MCP 协议"]
 ```
 
 子图模块化是构建大型 Agent 系统的关键技术。掌握了它，你就能构建**模块化、可维护、可扩展**的 Agent 系统。

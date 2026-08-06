@@ -21,9 +21,13 @@ python 02_tool_calling/01_function_calling.py
 
 Function Calling 让 LLM 能够**请求调用外部工具**。模型本身不执行任何函数，它只是告诉你："我想调用某个函数，参数是这些"。**真正的执行由我们的代码完成。**
 
-```
-用户提问 → LLM 决定调用工具 → 返回 tool_calls (函数名 + 参数)
-→ 我们执行工具 → 将结果以 tool role 返回 → LLM 生成最终回答
+```mermaid
+flowchart LR
+    U["用户提问"] --> L["LLM 决定调用工具"]
+    L --> TC["返回 tool_calls<br/>函数名 + 参数"]
+    TC --> E["我们执行工具"]
+    E --> TR["结果以 tool role 返回"]
+    TR --> A["LLM 生成最终回答"]
 ```
 
 **关键认知：** LLM 是"决策者"，我们是"执行者"。

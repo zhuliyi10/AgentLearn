@@ -110,7 +110,12 @@ def build_simple_graph() -> StateGraph:
     return graph.compile()
 ```
 
-**流程：** `START → chatbot → router → END`
+**流程：**
+
+```mermaid
+flowchart LR
+    S["START"] --> C["chatbot"] --> R["router"] --> E["END"]
+```
 
 ### 构建带循环的对话图
 
@@ -140,7 +145,14 @@ def build_conversational_graph() -> StateGraph:
     return graph.compile()
 ```
 
-**流程：** `START → chatbot → router → (continue? chatbot : END)`
+**流程：**
+
+```mermaid
+flowchart LR
+    S["START"] --> C["chatbot"] --> R["router"]
+    R -->|"continue"| C
+    R -->|"finish"| E["END"]
+```
 
 ### 运行图
 
@@ -165,32 +177,12 @@ for event in app.stream(initial_state):
 
 ## 状态流转可视化
 
-```
-初始状态:
-  messages: [HumanMessage("你好")]
-  next_action: "continue"
-
-↓ START → chatbot
-
-chatbot_node 执行:
-  读取: messages[-1] = "你好"
-  生成: "你好！我是 LangGraph Agent"
-  返回: {
-    messages: [AIMessage("你好！...")],
-    next_action: "finish"
-  }
-
-↓ chatbot → router
-
-router_node 执行:
-  读取: next_action = "finish"
-  返回: {next_action: "finish"}
-
-↓ router → END
-
-最终状态:
-  messages: [HumanMessage("你好"), AIMessage("你好！...")]
-  next_action: "finish"
+```mermaid
+flowchart TB
+    IS["初始状态<br/>messages: [HumanMessage('你好')]<br/>next_action: 'continue'"]
+    IS -->|"START → chatbot"| CN["chatbot_node 执行<br/>读取 messages[-1]<br/>返回: {messages: [AIMessage(...)], next_action: 'finish'}"]
+    CN -->|"chatbot → router"| RN["router_node 执行<br/>读取 next_action = 'finish'<br/>返回: {next_action: 'finish'}"]
+    RN -->|"router → END"| FS["最终状态<br/>messages: [HumanMessage, AIMessage]<br/>next_action: 'finish'"]
 ```
 
 ---
@@ -246,16 +238,12 @@ A:
 
 ## 知识脉络
 
-```
-阶段1: 基础对话 (LLM 直接回答)
-  ↓
-阶段2: 工具循环 (LLM 通过 tool_calls 调工具)
-  ↓
-阶段3: Agent 模式 (ReAct/Plan/Reflect/Memory)
-  ↓
-阶段4 本课: LangGraph 图基础 (声明式工作流)
-  ↓
-下一课: 条件路由 (根据状态动态决策)
+```mermaid
+flowchart TB
+    S1["阶段1: 基础对话<br/>LLM 直接回答"] --> S2["阶段2: 工具循环<br/>tool_calls 调工具"]
+    S2 --> S3["阶段3: Agent 模式<br/>ReAct / Plan / Reflect / Memory"]
+    S3 --> S4["阶段4 本课: LangGraph 图基础<br/>声明式工作流"]
+    S4 --> S5["下一课: 条件路由<br/>根据状态动态决策"]
 ```
 
 LangGraph 是工业级 Agent 开发的标准工具。掌握它，你就能构建可靠、可控、可维护的 Agent 系统。

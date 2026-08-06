@@ -21,9 +21,16 @@ python 03_agent_patterns/03_reflection.py
 
 Reflection（自我反思）模式模拟了人类"写了改、改了再写"的创作过程。核心思想极其简单：**让 LLM 自己批评自己**。
 
-```
-单次生成:   用户提问 → LLM 回答 → 结束 (质量取决于一次生成)
-Reflection: 用户提问 → LLM 生成 → LLM 反思 → LLM 改进 → LLM 再反思 → ... → 最终输出
+```mermaid
+flowchart TB
+    subgraph SO["单次生成"]
+        A1["用户提问"] --> A2["LLM 回答"] --> A3["结束（质量取决于一次生成）"]
+    end
+    subgraph RF["Reflection（迭代优化）"]
+        B1["用户提问"] --> B2["LLM 生成"] --> B3["LLM 反思"]
+        B3 -->|"未通过"| B4["LLM 改进"] --> B3
+        B3 -. "通过" .-> B5["最终输出"]
+    end
 ```
 
 **关键认知：** 同一个 LLM，通过扮演不同角色（生成者 vs 批评者），可以显著提升输出质量。这不是因为模型"变聪明了"，而是因为**分步处理降低了任务难度**——"写一篇好文章"比"一次性写出完美文章"容易得多。
@@ -289,17 +296,11 @@ A: 完全可以，而且实际系统经常组合使用：
 
 ## 知识脉络
 
-```
-01_react: ReAct 模式 (逐步推理，解决问题)
-  ↓
-02_plan_and_execute: Plan-and-Execute (全局规划，完成任务)
-  ↓
-03_reflection 本课: Reflection (自我反思，提升质量)
-  ├── 核心创新: Generator + Reflector 角色分离
-  ├── 关键技术: 迭代式改进循环
-  └── 适用场景: 写作、代码、任何可评估的输出
-  ↓
-下一课: 04_memory.py - 记忆机制
+```mermaid
+flowchart TB
+    S1["ReAct<br/>逐步推理，解决问题"] --> S2["Plan-and-Execute<br/>全局规划，完成任务"]
+    S2 --> S3["本课: Reflection<br/>自我反思，提升质量<br/>Generator + Reflector 角色分离 · 迭代改进循环"]
+    S3 --> S4["下一课: Memory<br/>记忆机制"]
 ```
 
 ---

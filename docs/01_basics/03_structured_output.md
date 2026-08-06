@@ -20,12 +20,10 @@ python 01_basics/03_structured_output.py
 
 LLM 默认输出自由文本，但程序需要**可解析、可校验**的数据。结构化输出让 LLM 的回复从"人可读"升级为"机器可用"。
 
-```
-自由文本: "我推荐《Python Crash Course》，适合入门..."
-     ↓ 无法可靠提取字段
-
-结构化 JSON: {"title": "Python Crash Course", "author": "Eric Matthes", ...}
-     ↓ 程序直接解析使用
+```mermaid
+flowchart LR
+    FT["自由文本<br/>「我推荐《Python Crash Course》...」"] --> FO["无法可靠提取字段<br/>程序需要 NLP 猜测"]
+    SJ["结构化 JSON<br/>{title, author, reason}"] --> SO["程序直接解析使用<br/>类型安全，可校验"]
 ```
 
 ### 两种实现方式对比

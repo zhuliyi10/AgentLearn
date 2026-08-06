@@ -31,14 +31,12 @@ TOOLS = [...]  # Schema 单独维护
 
 注册表模式将两者绑定在一起：
 
-```
-注册工具时同时提供: 函数实现 + JSON Schema
-         ↓
-ToolRegistry 统一管理
-         ↓
-├── get_openai_tools() → 给 LLM 的 tools 参数
-├── execute(name, args) → 执行工具
-└── list_tools() → 查看所有工具
+```mermaid
+flowchart TB
+    IN["注册工具<br/>函数实现 + JSON Schema"] --> R["ToolRegistry<br/>统一管理"]
+    R --> O["get_openai_tools()<br/>→ 给 LLM 的 tools 参数"]
+    R --> E["execute(name, args)<br/>→ 执行工具"]
+    R --> LS["list_tools()<br/>→ 查看所有工具"]
 ```
 
 ### 2. 装饰器注册模式

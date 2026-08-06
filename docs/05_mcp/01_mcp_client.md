@@ -100,14 +100,11 @@ async with stdio_client(params) as (read, write):
 
 ### 通信生命周期
 
-```
-启动子进程
-   ↓
-initialize()  ← 必须最先调用，互换能力信息与协议版本
-   ↓
-list_tools() / call_tool() / read_resource() / get_prompt()  ← 正常使用
-   ↓
-退出 async with  ← 子进程被自动关闭
+```mermaid
+flowchart TB
+    A["启动子进程<br/>StdioServerParameters"] --> B["initialize()<br/>必须最先调用<br/>互换能力信息与协议版本"]
+    B --> C["正常使用<br/>list_tools() / call_tool()<br/>read_resource() / get_prompt()"]
+    C --> D["退出 async with<br/>子进程被自动关闭"]
 ```
 
 !!! warning "initialize 是必须的"
@@ -160,12 +157,10 @@ A: 社区已有大量现成 Server：文件系统、Git/GitHub、PostgreSQL、Sl
 
 ## 知识脉络
 
-```
-阶段2: Function Calling (工具写死在 Agent 里)
-  ↓
-阶段5 本课: MCP Client (从标准接口动态发现并调用工具)
-  ↓
-下一课: MCP Server (自己实现能力提供方)
+```mermaid
+flowchart TB
+    S2["阶段2: Function Calling<br/>工具写死在 Agent 里"] --> C["阶段5 本课: MCP Client<br/>从标准接口动态发现并调用工具"]
+    C --> N["下一课: MCP Server<br/>自己实现能力提供方"]
 ```
 
 ---

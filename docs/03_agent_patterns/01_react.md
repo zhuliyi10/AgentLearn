@@ -23,9 +23,15 @@ ReAct = **Re**asoning + **Act**ing，源自 2022 年论文 *"ReAct: Synergizing 
 
 传统工具循环中，LLM 直接决定调用什么工具，是一个**黑盒**决策过程。ReAct 的核心改变是让 LLM **先说出自己的思考**，再决定行动：
 
-```
-传统工具循环:  用户提问 → LLM 直接调工具 → 拿结果 → 回答 (黑盒)
-ReAct:        用户提问 → Thought → Action → Observation → Thought → ... → Final Answer
+```mermaid
+flowchart LR
+    subgraph Old["传统工具循环（黑盒）"]
+        O1["用户提问"] --> O2["LLM 直接调工具"] --> O3["回答"]
+    end
+    subgraph New["ReAct（白盒推理）"]
+        N1["用户提问"] --> T["Thought 推理"] --> A["Action 行动"] --> Ob["Observation 观察"] --> T
+        Ob -. "信息足够时" .-> FA["Final Answer"]
+    end
 ```
 
 **关键认知：** ReAct 本质上是把 LLM 的"内心独白"显式化了。推理过程变成了可见的文本，而非隐藏在模型权重里的隐式决策。
@@ -218,14 +224,11 @@ A:
 
 ## 知识脉络
 
-```
-阶段1: 基础对话 (LLM 直接回答)
-  ↓
-阶段2: 工具循环 (LLM 通过 tool_calls 调工具，黑盒决策)
-  ↓
-阶段3 本课: ReAct (LLM 先思考再行动，白盒推理)
-  ↓
-下一课: Plan-and-Execute (先规划完整计划，再逐步执行)
+```mermaid
+flowchart TB
+    S1["阶段1: 基础对话<br/>LLM 直接回答"] --> S2["阶段2: 工具循环<br/>tool_calls 调工具，黑盒决策"]
+    S2 --> S3["阶段3 本课: ReAct<br/>先思考再行动，白盒推理"]
+    S3 --> S4["下一课: Plan-and-Execute<br/>先规划完整计划，再逐步执行"]
 ```
 
 ReAct 是 Agent 模式的基础范式。后续的 Plan-and-Execute、Reflection 等模式都是在 ReAct 的思想上的扩展和变体。
