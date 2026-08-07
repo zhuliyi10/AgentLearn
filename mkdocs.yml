@@ -76,6 +76,9 @@ nav:
     - 层级式架构: 06_multi_agent/02_hierarchical.md
     - 协作式架构: 06_multi_agent/03_collaborative.md
     - 辩论式架构: 06_multi_agent/04_debate.md
+  - 阶段7 - 端到端项目:
+    - 研究助手: 07_project/01_research_agent.md
+    - 代码助手: 07_project/02_code_agent.md
   - 部署指南: deployment-guide.md
 
 extra_css:

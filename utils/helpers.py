@@ -5,7 +5,10 @@
 """
 
 import json
+import typing
 from typing import Any
+
+from pydantic import BaseModel
 
 
 def print_separator(title: str = "") -> None:
@@ -42,3 +45,40 @@ def truncate(text: str, max_len: int = 500) -> str:
     if len(text) <= max_len:
         return text
     return text[:max_len] + f"... (共 {len(text)} 字符)"
+
+
+def json_skeleton(model_cls: type[BaseModel]) -> str:
+    """
+    根据 Pydantic 模型生成带占位说明的 JSON 骨架。
+
+    为什么需要它?
+        直接把 model_json_schema() 塞进提示词, 有些模型会把 Schema 本身原样
+        抄回来 (输出 {"type": "object", ...} 而不是真实数据)。
+        改成给一个"填空模板"—— 字段名固定、值是 <说明> 占位 —— 能非常可靠地
+        引导模型输出符合结构的实例。支持嵌套模型和列表。
+
+    示例输出:
+        { "title": <报告标题>, "sections": [ { "heading": <章节标题> }, ... ] }
+    """
+    def is_model(t: Any) -> bool:
+        return isinstance(t, type) and issubclass(t, BaseModel)
+
+    def render_model(cls: type[BaseModel]) -> str:
+        parts = [
+            f'"{name}": {render_value(f.annotation, f.description or name)}'
+            for name, f in cls.model_fields.items()
+        ]
+        return "{ " + ", ".join(parts) + " }"
+
+    def render_value(ann: Any, desc: str) -> str:
+        if is_model(ann):
+            return render_model(ann)
+        if typing.get_origin(ann) is list:
+            args = typing.get_args(ann)
+            item = args[0] if args else str
+            if is_model(item):
+                return f"[ {render_model(item)}, ... ]"
+            return f"[ <{desc}> ]"
+        return f"<{desc}>"
+
+    return render_model(model_cls)

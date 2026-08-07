@@ -152,6 +152,13 @@ LLM基础  →  工具调用  →  Agent模式  →  LangGraph  →  MCP协议  
     → 生成结构化报告 (Structured Output)
 ```
 
+| 文件 | 内容 | 核心知识点 |
+|------|------|-----------|
+| `research_agent/schemas.py` | 阶段间数据契约 | Pydantic 建模、防御式解析 |
+| `research_agent/tools.py` | 工具层 | 网页搜索、优雅降级 |
+| `research_agent/agents.py` | 四个专职 Agent | Planner/Researcher/Synthesizer/Critic |
+| `research_agent/main.py` | 流水线编排 | 规划→调研→综合→反思循环 |
+
 ### 项目 B: 代码助手 (`code_agent/`)
 
 ```
@@ -162,6 +169,19 @@ LLM基础  →  工具调用  →  Agent模式  →  LangGraph  →  MCP协议  
     → 反思修复 (Reflection Loop)
     → 输出最终结果
 ```
+
+| 文件 | 内容 | 核心知识点 |
+|------|------|-----------|
+| `code_agent/schemas.py` | 计划/代码/测试报告模型 | 结构化输出 |
+| `code_agent/sandbox.py` | 代码执行沙箱 | 子进程隔离、超时保护、客观反馈 |
+| `code_agent/agents.py` | 规划器 + 编码器 | Plan + 带报错自我修复 |
+| `code_agent/main.py` | 生成-测试-修复闭环 | 客观收敛信号 (测试通过) |
+
+**学完你应该能**:
+- [ ] 把独立的 Agent 能力组装成一条端到端流水线
+- [ ] 用 Pydantic 定义"阶段间接口"，让多阶段系统可靠协作
+- [ ] 理解"客观收敛信号"对 Agent 可靠性的决定性作用
+- [ ] 独立设计并实现一个属于自己的 Agent 应用
 
 **预计时间**: 5-7 天
 
